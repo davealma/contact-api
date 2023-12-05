@@ -1,10 +1,10 @@
 import { Hono } from "hono";
-import { user } from "./user/user";
+import { contact } from "./user/contact";
 import { prettyJSON } from "hono/pretty-json";
 
 const app = new Hono();
 app.use('/api/*', prettyJSON())
-app.route('/api/user', user);
+app.route('/api/contact', contact);
 
 app.get('/', (c) => c.text('Welcome to Hono on BUN, dear friend'))
 
