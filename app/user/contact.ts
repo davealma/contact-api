@@ -79,5 +79,4 @@ contact.delete('/:id', async (c) => {
         c.status(400);
         return c.json({errorMessage: error})
     }
-    
 });

@@ -7,7 +7,7 @@ test('/api/contact returns a list', async () => {
     expect(body["data"]).toBeArray();
 });
 
-test('/api/contact/randomId return 404', async() => {
+test('/api/contact/999999 should return 404', async() => {
     const response = await fetch(`${process.env.API_URL}/contact/999999`);
     
     expect(response.status).toBe(404);

@@ -19,6 +19,4 @@ export const Contact = sequelize.define('Contact', {
     bio: {
         type: DataTypes.STRING
     }
-}, {tableName: 'contacts'})
-
-Contact.sync();
+}, {tableName: 'contacts'});
