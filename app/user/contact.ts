@@ -30,7 +30,7 @@ contact.get('/', async (c) => {
     try {
         let users;
         if (search) {
-            users = await sequelize.query('SELECT * FROM contacts WHERE "firstName" LIKE :search_param', {
+            users = await sequelize.query('SELECT * FROM contacts WHERE ("firstName" LIKE :search_param or "lastName" LIKE :search_param)', {
                 replacements: {search_param: `${search}%`},
                 model: Contact,
                 mapToModel: true
