@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { Contact } from "../models";
-import { Model } from "sequelize";
+import { Model, QueryTypes } from "sequelize";
+import { sequelize } from "../connection";
 type Variables = {
     contact: Model<any, any>
 };
@@ -25,15 +26,23 @@ contact.use('/:id', async (c, next) => {
 })
 
 contact.get('/', async (c) => {
-    const { size } = c.req.query();
+    const { size, search } = c.req.query();
     try {
         let users;
-        if (size && !isNaN(+size)) {
-            users = await Contact.findAll({
-                limit: parseInt(size, 10)
+        if (search) {
+            users = await sequelize.query('SELECT * FROM contacts WHERE "firstName" LIKE :search_param', {
+                replacements: {search_param: `${search}%`},
+                model: Contact,
+                mapToModel: true
             })
         }else {
-            users = await Contact.findAll();
+            if (size && !isNaN(+size)) {
+                users = await Contact.findAll({
+                    limit: parseInt(size, 10)
+                })
+            }else {
+                users = await Contact.findAll();
+            }
         }
         const usersData = users.map(user => user.toJSON());
         return c.json({data: usersData})
