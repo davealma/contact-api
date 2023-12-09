@@ -25,8 +25,16 @@ contact.use('/:id', async (c, next) => {
 })
 
 contact.get('/', async (c) => {
+    const { size } = c.req.query();
     try {
-        const users = await Contact.findAll();
+        let users;
+        if (size && !isNaN(+size)) {
+            users = await Contact.findAll({
+                limit: parseInt(size, 10)
+            })
+        }else {
+            users = await Contact.findAll();
+        }
         const usersData = users.map(user => user.toJSON());
         return c.json({data: usersData})
     }catch(error) {
