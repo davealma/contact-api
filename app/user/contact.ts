@@ -1,7 +1,11 @@
 import { Hono } from "hono";
 import { Contact } from "../models";
-import { Model, QueryTypes } from "sequelize";
+import { Model } from "sequelize";
 import { sequelize } from "../connection";
+import { upload } from "../s3";
+import { fileURLToPath } from "url";
+
+
 type Variables = {
     contact: Model<any, any>
 };
@@ -58,11 +62,12 @@ contact.get('/:id', async (c) => {
     return c.json({data: contact.toJSON()})
 });
 
-contact.post('/', async (c) => {
+contact.post('/',  async (c) => {
     const body = await c.req.parseBody();
-    console.log(body)
+    const result = await upload(body);
+
     try {
-        const save = await Contact.create(body);
+        const save = await Contact.create({...body, image: result.Location});
         c.status(201)
         return c.json({user: save.toJSON()});
     }catch(error) {
@@ -74,9 +79,11 @@ contact.post('/', async (c) => {
 contact.put('/:id', async (c) => {
     const body = await c.req.parseBody();
     const contact = c.get('contact');
-    try {
+    const result = await upload(body);
+    const newBody = {...body, image: result.Location};
 
-        contact.set({...contact, ...body});
+    try {
+        contact.set({...contact, ...newBody });
         await contact.save();
         c.status(204);
         return c.text('')

@@ -13,6 +13,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "aws-sdk": "^2.1515.0",
     "hono": "^3.11.1",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
