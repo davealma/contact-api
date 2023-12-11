@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { contact } from "./user/contact";
 import { prettyJSON } from "hono/pretty-json";
 import { sequelize } from "./connection";
-import { Contact } from "./models";
 
 const app = new Hono();
 

@@ -3,7 +3,6 @@ import { Contact } from "../models";
 import { Model } from "sequelize";
 import { sequelize } from "../connection";
 import { upload } from "../s3";
-import { fileURLToPath } from "url";
 
 
 type Variables = {
@@ -64,10 +63,12 @@ contact.get('/:id', async (c) => {
 
 contact.post('/',  async (c) => {
     const body = await c.req.parseBody();
-    const result = await upload(body);
-
+    if (body['image']) {
+        const result = await upload(body);
+        body['image'] = result.Location;
+    }
     try {
-        const save = await Contact.create({...body, image: result.Location});
+        const save = await Contact.create({...body});
         c.status(201)
         return c.json({user: save.toJSON()});
     }catch(error) {
